@@ -5,14 +5,13 @@ _design/actors
 Index name
 byActors
 
-function(doc) {
+function (doc) {
   if ('docs' in doc) {
-    doc.docs.forEach(function(movies) {
-      if (
-        movies.actors.indexOf('Tom Hanks') !== -1 &&
-        movies.actors.indexOf('Gary Sinise') !== -1
-      ) {
-        emit(movies._id, movies.title);
+    doc.docs.forEach(function(movie) {
+      if (movie.genres) {
+        movie.genres.forEach(function (genre) {
+          emit(genre, 1);
+        });
       }
     });
   }
