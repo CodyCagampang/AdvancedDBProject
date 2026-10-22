@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Schema A Movies — Offline CRUD</title><link rel="stylesheet" href="style.css"><script defer src="vendor/pouchdb.min.js"></script><script defer src="database.js"></script><script defer src="replication.js"></script><script defer src="app.js"></script></head>
+<body><main><h1>Schema A Movies <small id="clientLabel"></small></h1><p>Local CRUD with automatic CouchDB replication</p>
+<section><h2>1. Database connection</h2><form id="connection">
+<label>CouchDB database URL<input id="remote" type="url" value="http://localhost:5984/movies-schema-a" required></label>
+<label>How your movies are stored<select id="mode"><option value="array">Inside my existing document's docs array</option value="documents">One separate document per movie</option></select></label>
+<label id="parentLabel">Parent document ID<input id="parentId" value="634e55a16de7150cece4878cd602394b"></label>
+<label>Username<input id="username" value="admin" autocomplete="username" required></label>
+<label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+<button id="connect">Connect / enable automatic synchronization</button><button id="change" type="button">Change database settings</button></form>
+<p id="workspace">Open the connection once to load your existing movie data.</p><p>URL and storage settings are remembered. Passwords are not saved; reconnect after reloading.</p>
+<label class="toggle"><input id="offline" type="checkbox"> <strong>Work offline — stop and block replication</strong></label>
+<p id="network" role="status"></p><dl><dt>Upload: browser → CouchDB</dt><dd id="push">Not connected</dd><dt>Download: CouchDB → browser</dt><dd id="pull">Not connected</dd><dt>Last completed replication cycle</dt><dd id="lastSync">None this session</dd></dl>
+<p>While connected, replication runs automatically after local saves and every 3 seconds. Uncheck Work offline to reconnect automatically during the same session.</p>
+<a id="clientLink" href="/?client=B" target="_blank" rel="noopener">Open independent client B for the conflict test</a>
+</section>
+<p id="message" role="status" aria-live="polite"></p>
+<section id="conflictSection" hidden><h2 id="conflictHeading">Conflicts detected</h2><p>Both versions are retained until you choose one. A database winner is not necessarily the version you want.</p><div id="conflictList"></div><div id="conflictViewer"></div></section>
+<section><h2 id="editorTitle">2. Add a movie</h2><form id="movieForm"><fieldset id="editor" disabled><label>Movie ID<input id="movieId" placeholder="Leave blank to generate an ID"></label><label>Title<input id="title" required></label><label>Actors, separated by commas<input id="actors"></label><label>Genres, separated by commas<input id="genres"></label><button id="save">Save locally</button><button id="cancel" type="button">Cancel edit / clear</button></fieldset></form></section>
+<section><h2>3. Local movies <span id="count"></span></h2><label>Search ID or title<input id="search" type="search"></label><p id="storageNote"></p><div class="scroll"><table><thead><tr><th>ID</th><th>Title</th><th>Actors</th><th>Genres</th><th>Actions</th></tr></thead><tbody id="movies"></tbody></table></div><p><button id="previous">Previous</button><span id="pageLabel"></span><button id="next">Next</button></p></section>
+<section><h2>4. Check the actual CouchDB copy</h2><p>This performs a real remote read. It does not read the local browser database.</p><form id="verifyForm"><label>Movie ID to check<input id="verifyId" required></label><button id="verify">Read from CouchDB</button></form><pre id="remoteResult">No remote check yet.</pre></section>
+<section><h2>Activity log</h2><p>Includes the destination URL and copied revisions. “Saved locally” alone does not mean uploaded.</p><pre id="log"></pre></section>
+<details><summary>How to demonstrate a conflict</summary><ol><li>Connect clients A and B to the same database and storage mode. Wait for a completed replication cycle in both.</li><li>Tick Work offline in client A, then edit and save a movie there.</li><li>Edit the same movie differently in client B and let it synchronize with CouchDB.</li><li>Uncheck Work offline in A. After synchronization, the conflict banner appears. Inspect both versions and choose one.</li></ol><p>Two edits must start from the same shared revision. Editing only one disconnected copy is not a conflict. In array mode the conflict belongs to the entire parent document.</p></details>
+</main></body></html>

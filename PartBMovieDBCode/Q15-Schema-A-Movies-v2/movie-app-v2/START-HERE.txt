@@ -1,0 +1,40 @@
+SCHEMA A MOVIES — REPLACEMENT APP
+
+1. Extract this ZIP. Open movie-app-v2 in VS Code.
+2. Terminal > New Terminal. Run:
+
+   node server.js
+
+3. Open http://localhost:8081
+   This uses 8081 to avoid the previous app's cached code and local database.
+
+4. In CouchDB Fauxton > Configuration > CORS:
+   Enable CORS and allow the origin http://localhost:8081
+   (Do not enter the database URL here. The allowed origin is the app's address.)
+   See README.md if you need the exact configuration settings.
+
+5. In the app:
+   Database URL: http://localhost:5984/movies-schema-a
+   Storage: Inside my existing document's docs array
+   Parent document ID: 634e55a16de7150cece4878cd602394b
+   Confirm this is STILL the parent ID shown in your Fauxton database.
+   Enter your CouchDB username/password and click Connect.
+   Wait for the first download and a completed replication cycle.
+
+6. The app now edits the movies INSIDE that parent document.
+   John Wick added as a separate document by the old app will not automatically
+   be inserted into this array. The new app does not migrate your old data.
+
+7. Tick Work offline. Create/update/delete a test movie locally.
+   Nothing new is sent to CouchDB while this switch is on.
+   Uncheck it to reconnect automatically during the same session.
+
+8. Use Read from CouchDB to verify the actual server copy.
+   For this array layout, Postman GET /movies-schema-a/2863 is NOT the correct
+   remote check. GET the parent document and look inside docs instead.
+
+9. For the conflict test, open client B using the link in the app.
+   See DEMONSTRATION.md for the exact steps and expected results.
+
+Keep Node running. Keep this same browser address, port and profile.
+You do not need npm install just to run the application.
